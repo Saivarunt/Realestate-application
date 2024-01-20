@@ -69,7 +69,6 @@ public class AgentController {
     @PostMapping("/rate-agent/{id}")
     public ResponseEntity<AgentProfileResponse> rateAgent(@PathVariable String id, @RequestBody Rating body) {
         AgentProfile agent = agentProfileService.getAgentEntireProfile(id);
-        agent.setRating(body.getRating());
-        return new ResponseEntity<>(agentProfileService.saveAgent(agent),HttpStatus.OK);
+        return new ResponseEntity<>(agentProfileService.saveAgent(agent,body),HttpStatus.OK);
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.example.realestatelisting.models.AgentProfile;
 import com.example.realestatelisting.models.User;
 import com.example.realestatelisting.models.dto.AgentProfileResponse;
+import com.example.realestatelisting.models.dto.Rating;
 import com.example.realestatelisting.models.dto.UserInfoResponse;
 import com.example.realestatelisting.repository.AgentProfileRepository;
 import com.example.realestatelisting.service.AgentProfileService;
@@ -45,13 +46,33 @@ public class AgentProfileServiceImp  implements AgentProfileService{
 
     @Override
     public AgentProfileResponse createAgent(User user) {
-        AgentProfile agent = agentProfileRepository.save(new AgentProfile((long) 0, user, 0, 0));
+        AgentProfile agent = agentProfileRepository.save(new AgentProfile((long) 0, user, 0, 0,-1,0));
         UserInfoResponse userResponse = userService.responseConverter(agent.getUserId());
         return new AgentProfileResponse(agent.getAgentId(),userResponse,agent.getRating(),agent.getSale_count());
     }
 
     @Override
-    public AgentProfileResponse saveAgent(AgentProfile agent) {
+    public AgentProfileResponse saveAgent(AgentProfile agent, Rating rating) {
+
+        if(rating != null){
+
+            if(rating.getRating() > 5 || rating.getRating() < 0){
+                throw new RuntimeException("Provide rating less than or equal to 5");
+            }
+
+            if(agent.getRated() == -1){
+                agent.setRating_count(1);
+                agent.setRating(rating.getRating());
+                agent.setRated(rating.getRating());
+            }
+            else{
+                agent.setRating_count(agent.getRating_count() + 1);
+                agent.setRated(agent.getRated() + rating.getRating());
+                agent.setRating(agent.getRated() / agent.getRating_count());
+            }
+
+        }
+
         AgentProfile profile = agentProfileRepository.save(agent);
         UserInfoResponse userResponse = userService.responseConverter(profile.getUserId());
         return new AgentProfileResponse(profile.getAgentId(),userResponse,profile.getRating(),profile.getSale_count());
@@ -67,5 +88,4 @@ public class AgentProfileServiceImp  implements AgentProfileService{
         UserInfoResponse user = userService.responseConverter(agent.getUserId());
         return new AgentProfileResponse(agent.getAgentId(),user,agent.getRating(),agent.getSale_count());
     }
-    
 }

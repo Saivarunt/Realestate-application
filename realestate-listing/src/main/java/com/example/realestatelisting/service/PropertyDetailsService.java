@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.example.realestatelisting.models.PropertyDetails;
 import com.example.realestatelisting.models.dto.PropertyDetailsResponse;
 import com.example.realestatelisting.models.dto.PropertyInfoPost;
+import com.example.realestatelisting.models.dto.Rating;
 import com.example.realestatelisting.models.dto.UpdatePropertyInfo;
 
 @Service
@@ -21,4 +22,5 @@ public interface PropertyDetailsService {
     public Long averagePoplarity();
     public PropertyDetails getEntireDetailsById(String id);
     public PropertyDetailsResponse responseConverter(PropertyDetails property);
+    public PropertyDetailsResponse savePropertyRating(PropertyDetails propertyDetails, Rating rating);
 }

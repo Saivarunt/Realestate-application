@@ -34,4 +34,7 @@ public class AgentProfile {
     private Integer rating = 0;
 
     private Integer sale_count = 0;
+
+    private Integer rated = 0;
+    private Integer rating_count = 0;
 }

@@ -20,11 +20,9 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -100,26 +98,8 @@ public class SellerController {
         return new ResponseEntity<>("",HttpStatus.FORBIDDEN);
 
     }
-
-    @GetMapping("/with-image/{id}/{fileName}")
-	public ResponseEntity<byte[]> downloadImageFromFacilitySystem(@PathVariable String id, @PathVariable String fileName,HttpServletRequest request){
-
-        String username = tokenService.validateJWTForUserInfo(request.getHeader("Authorization").split(" ",2)[1]);
-        PropertyDetails property = propertyDetailsService.getEntireDetailsById(id);
-        ApplicationImageStorage image = applicationImageStorageService.findPropertyImage(property);
-
-        if (image.getImage_url().equals("D:\\varun\\college\\trustrace\\code\\backend-task\\realestate-listing\\images\\" + fileName) && property.getUser_id().getUsername().equals(username)){			
-            byte[] imageData=applicationImageStorageService.getByFileName("D:\\varun\\college\\trustrace\\code\\backend-task\\realestate-listing\\images\\" + fileName);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .contentType(MediaType.valueOf("image/jpg"))
-                    .body(imageData);
-        }
-
-        return new ResponseEntity<byte[]>(new byte[1], HttpStatus.FORBIDDEN);
-
-	}
     
-    @DeleteMapping("/delete/{id}/{fileName}")
+    @DeleteMapping("/delete-property-image/{id}/{fileName}")
     public ResponseEntity<Boolean> deleteImageToFacilitySystem(@PathVariable String id,@PathVariable String fileName, HttpServletRequest request) {
 
         String username = tokenService.validateJWTForUserInfo(request.getHeader("Authorization").split(" ",2)[1]);

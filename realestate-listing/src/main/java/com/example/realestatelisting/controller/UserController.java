@@ -17,8 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.realestatelisting.models.ApplicationImageStorage;
 import com.example.realestatelisting.models.Location;
+import com.example.realestatelisting.models.PropertyDetails;
 import com.example.realestatelisting.models.User;
 import com.example.realestatelisting.models.dto.PropertyDetailsResponse;
+import com.example.realestatelisting.models.dto.Rating;
 import com.example.realestatelisting.models.dto.UpdateUserInfo;
 import com.example.realestatelisting.models.dto.UserInfoResponse;
 import com.example.realestatelisting.service.implementation.ApplicationImageStorageServiceImp;
@@ -118,7 +120,7 @@ public class UserController {
     }
 
     @GetMapping("/with-image/{id}/{fileName}")
-	public ResponseEntity<byte[]> downloadImageFromFacilitySystem(@PathVariable String id, @PathVariable String fileName,HttpServletRequest request){
+	public ResponseEntity<byte[]> downloadImageFromUser(@PathVariable String id, @PathVariable String fileName,HttpServletRequest request){
 
         String username = tokenService.validateJWTForUserInfo(request.getHeader("Authorization").split(" ",2)[1]);
         User user = userService.getEntireUser(username);
@@ -134,7 +136,23 @@ public class UserController {
         return new ResponseEntity<byte[]>(new byte[1], HttpStatus.FORBIDDEN);
 
 	}
-    
+
+    @GetMapping("/property-with-image/{id}/{fileName}")
+	public ResponseEntity<byte[]> downloadImageFromProperty(@PathVariable String id, @PathVariable String fileName){
+        PropertyDetails property = propertyDetailsService.getEntireDetailsById(id);
+        ApplicationImageStorage image = applicationImageStorageService.findPropertyImage(property);
+
+        if (image.getImage_url().equals("D:\\varun\\college\\trustrace\\code\\backend-task\\realestate-listing\\images\\" + fileName)){			
+            byte[] imageData=applicationImageStorageService.getByFileName("D:\\varun\\college\\trustrace\\code\\backend-task\\realestate-listing\\images\\" + fileName);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.valueOf("image/jpg"))
+                    .body(imageData);
+        }
+
+        return new ResponseEntity<byte[]>(new byte[1], HttpStatus.FORBIDDEN);
+
+	}
+
     @DeleteMapping("/delete/{id}/{fileName}")
     public ResponseEntity<Boolean> deleteImageToFacilitySystem(@PathVariable String id,@PathVariable String fileName, HttpServletRequest request) {
 
@@ -158,23 +176,29 @@ public class UserController {
         return new ResponseEntity<>(locationService.getAllLocations(),HttpStatus.OK);
     }
     
-    @GetMapping("/locations/{id}")
+    @GetMapping("/locations-by-id/{id}")
     public ResponseEntity<Location> findLocationById(@PathVariable String id) {
         return new ResponseEntity<>(locationService.getLocationById(id),HttpStatus.OK);
     }
 
-    @GetMapping("/locations/{city}")
+    @GetMapping("/locations-by-city/{city}")
     public ResponseEntity<List<Location>> findLocationByCity(@PathVariable String city) {
         return new ResponseEntity<>(locationService.getLocationByCity(city),HttpStatus.OK);
     }
 
-    @GetMapping("/locations/{state}")
+    @GetMapping("/locations-by-state/{state}")
     public ResponseEntity<List<Location>> findLocationByState(@PathVariable String state) {
         return new ResponseEntity<>(locationService.getLocationByState(state),HttpStatus.OK);
     }
 
-    @GetMapping("/locations/{country}")
+    @GetMapping("/locations-by-country/{country}")
     public ResponseEntity<List<Location>> findLocationBycountry(@PathVariable String country) {
         return new ResponseEntity<>(locationService.getLocationByCountry(country),HttpStatus.OK);
+    }
+
+    @PostMapping("/rate-property/{id}")
+    public ResponseEntity<PropertyDetailsResponse> rateProperty(@PathVariable String id, @RequestBody Rating body) {
+        PropertyDetails property = propertyDetailsService.getEntireDetailsById(id);
+        return new ResponseEntity<>(propertyDetailsService.savePropertyRating(property,body),HttpStatus.OK);
     }
 }

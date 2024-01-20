@@ -11,6 +11,7 @@ import com.example.realestatelisting.models.PropertyDetails;
 import com.example.realestatelisting.models.User;
 import com.example.realestatelisting.models.dto.PropertyDetailsResponse;
 import com.example.realestatelisting.models.dto.PropertyInfoPost;
+import com.example.realestatelisting.models.dto.Rating;
 import com.example.realestatelisting.models.dto.UpdatePropertyInfo;
 import com.example.realestatelisting.repository.LocationRepository;
 import com.example.realestatelisting.repository.PropertyDetailsRepository;
@@ -49,14 +50,24 @@ public class PropertyDetailsServiceImp implements PropertyDetailsService{
     public PropertyDetailsResponse saveProperty(PropertyInfoPost property) {
         User user = userRepository.findById(property.getUser_id()).get();
         Location propertyLocation = new Location(null, property.getLocation().getCountry(), property.getLocation().getCity(), property.getLocation().getState(), property.getLocation().getPrimary_address(), property.getLocation().getPincode(),property.getLocation().getCoordinates());
-        PropertyDetails propertyDetails = new PropertyDetails(null, user, property.getName(), propertyLocation, property.getPrice(), true, 0, (long)0);
 
+        Integer flag = 0;
         List<Location> locations = locationRepository.findAll();
         for(Location location : locations ){
-            if(!propertyLocation.getCoordinates().equals(location.getCoordinates())){
-                locationRepository.save(propertyLocation);
+            System.out.println(propertyLocation.getCoordinates().equals(location.getCoordinates()));
+            if(propertyLocation.getCoordinates().equals(location.getCoordinates())){
+                flag = 1;
+                propertyLocation = location;
             }
         }
+
+        System.out.println("flag "+ flag);
+
+        if(flag.equals(0)){
+            locationRepository.save(propertyLocation);
+        }
+
+        PropertyDetails propertyDetails = new PropertyDetails(null, user, property.getName(), propertyLocation, property.getPrice(), true, 0, (long)0,-1,0);
         PropertyDetails details = propertyDetailsRepository.save(propertyDetails);
         return new PropertyDetailsResponse(details.getPropertyId(), userService.responseConverter(user), details.getName(), propertyLocation, details.getPrice(), details.getAvailability(), details.getRating(), details.getPopularity());
     }
@@ -167,6 +178,33 @@ public class PropertyDetailsServiceImp implements PropertyDetailsService{
     @Override
     public PropertyDetailsResponse responseConverter(PropertyDetails property) {
         return new PropertyDetailsResponse(property.getPropertyId(), userService.responseConverter(property.getUser_id()), property.getName(), property.getLocation(), property.getPrice(), property.getAvailability(), property.getRating(), property.getPopularity());
+    }
+
+    @Override
+    public PropertyDetailsResponse savePropertyRating(PropertyDetails propertyDetails, Rating rating) {
+
+        if(rating != null){
+
+            if(rating.getRating() > 5 || rating.getRating() < 0){
+                throw new RuntimeException("Provide rating less than or equal to 5");
+            }
+                
+            if(propertyDetails.getRated() == -1){
+                propertyDetails.setRating_count(1);
+                propertyDetails.setRating(rating.getRating());
+                propertyDetails.setRated(rating.getRating());
+            }
+            else{
+                propertyDetails.setRated(propertyDetails.getRated() + rating.getRating());
+                propertyDetails.setRating_count(propertyDetails.getRating_count() + 1);
+                propertyDetails.setRating(propertyDetails.getRated()  / propertyDetails.getRating_count());
+            }
+
+        }
+
+        PropertyDetails details = propertyDetailsRepository.save(propertyDetails);
+        return new PropertyDetailsResponse(details.getPropertyId(), userService.responseConverter(details.getUser_id()), details.getName(), details.getLocation(), details.getPrice(), details.getAvailability(), details.getRating(), details.getPopularity());
+    
     }
 
 }

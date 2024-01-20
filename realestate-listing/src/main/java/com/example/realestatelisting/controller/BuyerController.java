@@ -68,7 +68,7 @@ public class BuyerController {
             
             agent.setSale_count(agent.getSale_count() + 1);
             
-            agentProfileService.saveAgent(agent);
+            agentProfileService.saveAgent(agent,null);
 
             return new ResponseEntity<>(purchaseInfo,HttpStatus.OK); 
         }

@@ -1,6 +1,5 @@
 package com.example.realestatelisting.models;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,7 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,7 +32,7 @@ public class PropertyDetails {
 
     private String name;
 
-    @OneToOne(cascade = CascadeType.ALL,optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id")
     private Location location;
 
@@ -45,4 +43,8 @@ public class PropertyDetails {
     private Integer rating = 0;
 
     private Long popularity = (long)0;
+
+    private Integer rated = 0;
+
+    private Integer rating_count = 0;
 }
