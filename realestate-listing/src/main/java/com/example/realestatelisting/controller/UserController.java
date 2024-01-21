@@ -153,7 +153,7 @@ public class UserController {
 
 	}
 
-    @DeleteMapping("/delete/{id}/{fileName}")
+    @DeleteMapping("/delete-image/{id}/{fileName}")
     public ResponseEntity<Boolean> deleteImageToFacilitySystem(@PathVariable String id,@PathVariable String fileName, HttpServletRequest request) {
 
         String username = tokenService.validateJWTForUserInfo(request.getHeader("Authorization").split(" ",2)[1]);
