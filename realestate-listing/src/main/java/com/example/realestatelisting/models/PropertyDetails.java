@@ -21,6 +21,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PropertyDetails {
+
     @Id
     @Column(name = "property_id")
     @GeneratedValue(strategy = GenerationType.AUTO)

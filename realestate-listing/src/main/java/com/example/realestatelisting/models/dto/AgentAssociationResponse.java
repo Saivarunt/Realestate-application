@@ -12,7 +12,9 @@ import lombok.Setter;
 @Setter
 public class AgentAssociationResponse {
     private Long associationId;
+
     private UserInfoResponse user_id;
+
     private AgentProfileResponse agent_Id;
 
     private Long price;

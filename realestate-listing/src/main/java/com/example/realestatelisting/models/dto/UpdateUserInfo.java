@@ -11,7 +11,10 @@ import lombok.Setter;
 @Setter
 public class UpdateUserInfo {
     private String username;
+
     private String fullname;
+
     private String email;
+
     private String phonenumber;
 }

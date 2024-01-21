@@ -68,12 +68,12 @@ public class User  implements UserDetails{
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    public User addAuthorities(Role authority){
+    public User addAuthorities(Role authority) {
         this.authorities.add(authority);
         return this;
     }
 
-    public User updateAuthorities(Role authority){
+    public User updateAuthorities(Role authority) {
         this.authorities.remove(authority);
         return this;
     }

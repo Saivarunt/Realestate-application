@@ -13,6 +13,7 @@ import lombok.Setter;
 
 public class PropertyDetailsResponse {
     private Long propertyId;
+
     private UserInfoResponse user_id;
 
     private String name;

@@ -25,7 +25,7 @@ public class TokenService {
     @Autowired
     private JwtDecoder jwtDecoder;
 
-    public String generateJWT(Authentication auth){
+    public String generateJWT(Authentication auth) {
         Instant now = Instant.now();
 
         String userRoles = auth.getAuthorities().stream()
@@ -43,15 +43,12 @@ public class TokenService {
 
     }
 
-    // {iss=self, sub=Sai, iat=2024-01-14T09:22:14Z, roles=BUYER USER}
-    public Map<String,String> validateJWTForRole(String token, UpdateRole body){
+    public Map<String,String> validateJWTForRole(String token, UpdateRole body) {
         Map<String, Object> claim = jwtDecoder.decode(token).getClaims();
-        
-        System.out.println(claim);
+
         if(claim.get("sub").toString().equals(body.getUsername())){
             
             String roles = (String) claim.get("roles");
-            System.out.println(roles);
             
             if(roles.contains(body.getRole())){
                 return new HashMap<String, String>(){{
@@ -59,6 +56,7 @@ public class TokenService {
                     put("Allow", "false");
                 }};
             }
+
         }
         else{
             return new HashMap<String,String>(){{
@@ -73,7 +71,7 @@ public class TokenService {
         }};
     }
 
-    public String validateJWTForUserInfo(String token){
+    public String validateJWTForUserInfo(String token) {
         return jwtDecoder.decode(token).getSubject();
     }
 }

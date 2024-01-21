@@ -21,6 +21,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AgentAssociation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "association_id")

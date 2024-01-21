@@ -13,6 +13,7 @@ public class LoginResponse {
     @Getter
     @Setter
     private User user;
+
     @Getter
     @Setter
     private String jwt;

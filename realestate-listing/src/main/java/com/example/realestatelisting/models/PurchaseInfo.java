@@ -24,6 +24,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PurchaseInfo {
+
     @Id
     @Column(name = "purchase_id")
     @GeneratedValue(strategy = GenerationType.AUTO)

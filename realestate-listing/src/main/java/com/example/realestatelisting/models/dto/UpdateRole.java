@@ -10,7 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UpdateRole {
-    
     private String username;
 
     private String role;

@@ -12,7 +12,8 @@ import com.example.realestatelisting.repository.PurchaseInfoRepository;
 import com.example.realestatelisting.service.PurchaseInfoService;
 
 @Service
-public class PurchaseInfoServiceImp  implements PurchaseInfoService{
+public class PurchaseInfoServiceImp  implements PurchaseInfoService {
+
     @Autowired
     PurchaseInfoRepository purchaseInfoRepository;
 

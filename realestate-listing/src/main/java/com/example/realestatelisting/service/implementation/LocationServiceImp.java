@@ -10,7 +10,7 @@ import com.example.realestatelisting.repository.LocationRepository;
 import com.example.realestatelisting.service.LocationService;
 
 @Service
-public class LocationServiceImp implements LocationService{
+public class LocationServiceImp implements LocationService {
 
     @Autowired
     LocationRepository locationRepository;

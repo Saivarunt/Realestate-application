@@ -110,7 +110,6 @@ public class UserController {
     public ResponseEntity<String> addImage(@PathVariable String id, @RequestParam("image")MultipartFile file, HttpServletRequest request) {
         String username = tokenService.validateJWTForUserInfo(request.getHeader("Authorization").split(" ",2)[1]);
         User user = userService.getEntireUser(username);
-        System.out.println(Long.parseLong(id) == (long) user.getUserId());
 
         if(Long.parseLong(id) == (long) user.getUserId()){
             return new ResponseEntity<>(applicationImageStorageService.uploadImage(file, "user", id),HttpStatus.OK);
@@ -120,7 +119,7 @@ public class UserController {
     }
 
     @GetMapping("/with-image/{id}/{fileName}")
-	public ResponseEntity<byte[]> downloadImageFromUser(@PathVariable String id, @PathVariable String fileName,HttpServletRequest request){
+	public ResponseEntity<byte[]> downloadImageFromUser(@PathVariable String id, @PathVariable String fileName, HttpServletRequest request){
 
         String username = tokenService.validateJWTForUserInfo(request.getHeader("Authorization").split(" ",2)[1]);
         User user = userService.getEntireUser(username);
@@ -150,11 +149,10 @@ public class UserController {
         }
 
         return new ResponseEntity<byte[]>(new byte[1], HttpStatus.FORBIDDEN);
-
 	}
 
     @DeleteMapping("/delete-image/{id}/{fileName}")
-    public ResponseEntity<Boolean> deleteImageToFacilitySystem(@PathVariable String id,@PathVariable String fileName, HttpServletRequest request) {
+    public ResponseEntity<Boolean> deleteImageToFacilitySystem(@PathVariable String id, @PathVariable String fileName, HttpServletRequest request) {
 
         String username = tokenService.validateJWTForUserInfo(request.getHeader("Authorization").split(" ",2)[1]);
         User user = userService.getEntireUser(username);
@@ -162,10 +160,12 @@ public class UserController {
 
         if(Long.parseLong(id) == (long) user.getUserId()){
             Boolean deletedImage = applicationImageStorageService.deleteImage(image);
+
             if (deletedImage){
                 return ResponseEntity.status(HttpStatus.OK)
                     .body(deletedImage);
             }
+
         }
 
         return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);

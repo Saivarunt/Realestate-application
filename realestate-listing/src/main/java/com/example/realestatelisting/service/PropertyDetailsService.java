@@ -13,7 +13,7 @@ import com.example.realestatelisting.models.dto.UpdatePropertyInfo;
 @Service
 public interface PropertyDetailsService {
     public PropertyDetailsResponse saveProperty(PropertyInfoPost property);
-    public PropertyDetailsResponse updateProperty(UpdatePropertyInfo property,String id);
+    public PropertyDetailsResponse updateProperty(UpdatePropertyInfo property, String id);
     public List<PropertyDetailsResponse> getAllDetails();
     public PropertyDetailsResponse getDetailsById(String id);
     public List<PropertyDetailsResponse> getDetailsByName(String propertyname);

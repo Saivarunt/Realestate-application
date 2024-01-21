@@ -1,6 +1,5 @@
 package com.example.realestatelisting.service.implementation;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +42,7 @@ public class AgentAssociationServiceImp implements AgentAssociationService {
         if(agent == null){
             return null;
         }
-        else if (!agentAssociationRepository.findByUser_idAndAgent_Id(user,agent).isEmpty()) { 
+        else if (!agentAssociationRepository.findByUser_idAndAgent_Id(user, agent).isEmpty()) { 
             return agent;
         }
         else{

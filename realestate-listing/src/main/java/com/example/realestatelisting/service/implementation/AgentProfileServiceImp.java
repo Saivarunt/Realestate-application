@@ -15,7 +15,7 @@ import com.example.realestatelisting.repository.AgentProfileRepository;
 import com.example.realestatelisting.service.AgentProfileService;
 
 @Service
-public class AgentProfileServiceImp  implements AgentProfileService{
+public class AgentProfileServiceImp  implements AgentProfileService {
 
     @Autowired
     AgentProfileRepository agentProfileRepository;
@@ -27,7 +27,7 @@ public class AgentProfileServiceImp  implements AgentProfileService{
     public AgentProfileResponse getAgentProfile(String agentId) {
         AgentProfile requestedProfile = agentProfileRepository.findById(Long.parseLong(agentId)).get();
         UserInfoResponse user = userService.responseConverter(requestedProfile.getUserId());
-        return new AgentProfileResponse(requestedProfile.getAgentId(),user,requestedProfile.getRating(),requestedProfile.getSale_count());
+        return new AgentProfileResponse(requestedProfile.getAgentId(), user, requestedProfile.getRating(), requestedProfile.getSale_count());
     }
 
     @Override
@@ -39,16 +39,16 @@ public class AgentProfileServiceImp  implements AgentProfileService{
         
         for(AgentProfile agent : agents){
             UserInfoResponse user = userService.responseConverter(agent.getUserId());
-            responses.add(new AgentProfileResponse(agent.getAgentId(),user,agent.getRating(),agent.getSale_count()));
+            responses.add(new AgentProfileResponse(agent.getAgentId(), user, agent.getRating(), agent.getSale_count()));
         }
         return responses;
     }
 
     @Override
     public AgentProfileResponse createAgent(User user) {
-        AgentProfile agent = agentProfileRepository.save(new AgentProfile((long) 0, user, 0, 0,-1,0));
+        AgentProfile agent = agentProfileRepository.save(new AgentProfile((long) 0, user, 0, 0, -1, 0));
         UserInfoResponse userResponse = userService.responseConverter(agent.getUserId());
-        return new AgentProfileResponse(agent.getAgentId(),userResponse,agent.getRating(),agent.getSale_count());
+        return new AgentProfileResponse(agent.getAgentId(), userResponse, agent.getRating(), agent.getSale_count());
     }
 
     @Override
@@ -75,7 +75,7 @@ public class AgentProfileServiceImp  implements AgentProfileService{
 
         AgentProfile profile = agentProfileRepository.save(agent);
         UserInfoResponse userResponse = userService.responseConverter(profile.getUserId());
-        return new AgentProfileResponse(profile.getAgentId(),userResponse,profile.getRating(),profile.getSale_count());
+        return new AgentProfileResponse(profile.getAgentId(), userResponse,profile.getRating(), profile.getSale_count());
     }
 
     @Override
@@ -86,6 +86,6 @@ public class AgentProfileServiceImp  implements AgentProfileService{
     @Override
     public AgentProfileResponse responseConverter(AgentProfile agent) {
         UserInfoResponse user = userService.responseConverter(agent.getUserId());
-        return new AgentProfileResponse(agent.getAgentId(),user,agent.getRating(),agent.getSale_count());
+        return new AgentProfileResponse(agent.getAgentId(), user, agent.getRating(), agent.getSale_count());
     }
 }

@@ -22,12 +22,13 @@ public class RealestateListingApplication {
 	}
 
 	@Bean
-	CommandLineRunner run(RoleRepositoy roleRepositoy, UserRepository userRepository, PasswordEncoder passwordEncoder){
+	CommandLineRunner run(RoleRepositoy roleRepositoy, UserRepository userRepository, PasswordEncoder passwordEncoder) {
 		return args ->{
 
 			if(roleRepositoy.findByAuthority("ADMIN").isPresent()){
 				return;
 			}
+
 			Role adminRole = roleRepositoy.save(new Role("ADMIN"));
 			roleRepositoy.save(new Role("USER"));
 			roleRepositoy.save(new Role("AGENT"));
@@ -38,7 +39,7 @@ public class RealestateListingApplication {
 			Set<Role> roles = new HashSet<>();
 			roles.add(adminRole);
 
-			User admin = new User((long) 1, "admin", passwordEncoder.encode("admin"),roles,"admin","admin@gmail.com","1234567890");
+			User admin = new User((long) 1, "admin", passwordEncoder.encode("admin"), roles, "admin", "admin@gmail.com", "1234567890");
 
 			userRepository.save(admin);
 		};

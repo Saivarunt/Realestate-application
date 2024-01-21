@@ -7,6 +7,6 @@ import com.example.realestatelisting.models.Role;
 import java.util.Optional;
 
 @Repository
-public interface RoleRepositoy  extends JpaRepository<Role,Long>{
+public interface RoleRepositoy  extends JpaRepository<Role, Long> {
     Optional<Role> findByAuthority(String authority);
 }

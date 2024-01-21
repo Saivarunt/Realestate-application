@@ -12,7 +12,6 @@ import org.springframework.web.server.MethodNotAllowedException;
 
 @RestControllerAdvice
 public class ExceptionHandlerClass {
-    // method not allowed
     @ExceptionHandler(value = { IllegalArgumentException.class })
     public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException e) {
         return ResponseEntity.status(Response.SC_BAD_REQUEST).body(e.getMessage());

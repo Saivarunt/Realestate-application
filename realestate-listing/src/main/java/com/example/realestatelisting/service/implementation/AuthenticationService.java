@@ -38,7 +38,7 @@ public class AuthenticationService {
     @Autowired
     private TokenService tokenService;
 
-    public User registerUser(String username, String password, String role){
+    public User registerUser(String username, String password, String role) {
         
         String encodedPassword = passwordEncoder.encode(password);
 
@@ -62,14 +62,15 @@ public class AuthenticationService {
         else{
             throw new RuntimeException("Invalid role details.");
         }
+
         if(subRole != null){
             authorities.add(subRole);
         }
 
-        return userRepository.save(new User((long) 0, username, encodedPassword, authorities,"","",""));
+        return userRepository.save(new User((long) 0, username, encodedPassword, authorities, "", "", ""));
     }
 
-    public LoginResponse loginUser(String username, String password){
+    public LoginResponse loginUser(String username, String password) {
         Authentication auth = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(username, password)
         );
@@ -80,7 +81,7 @@ public class AuthenticationService {
     }
 
 
-    public User addNewRole(String username, String newRole){
+    public User addNewRole(String username, String newRole) {
 
         Role subRole = null;
         Optional<User> user = userRepository.findByUsername(username);
@@ -98,15 +99,17 @@ public class AuthenticationService {
         else{
             throw new RuntimeException("Invalid role details.");
         }
+        
         if(subRole != null){
            updatedUser = user.get().addAuthorities(subRole);
         }
+        
         return userRepository.save(updatedUser);
     }
 
 
     
-    public User removeRole(String username, String role){
+    public User removeRole(String username, String role) {
 
         Role subRole = null;
         Optional<User> user = userRepository.findByUsername(username);
@@ -124,9 +127,11 @@ public class AuthenticationService {
         else{
             throw new RuntimeException("Invalid role details.");
         }
+        
         if(subRole != null){
            updatedUser = user.get().updateAuthorities(subRole);
         }
+        
         return userRepository.save(updatedUser);
     }
 }

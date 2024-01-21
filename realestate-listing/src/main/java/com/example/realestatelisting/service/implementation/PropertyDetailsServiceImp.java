@@ -19,7 +19,7 @@ import com.example.realestatelisting.repository.UserRepository;
 import com.example.realestatelisting.service.PropertyDetailsService;
 
 @Service
-public class PropertyDetailsServiceImp implements PropertyDetailsService{
+public class PropertyDetailsServiceImp implements PropertyDetailsService {
 
     @Autowired
     PropertyDetailsRepository propertyDetailsRepository;
@@ -39,35 +39,38 @@ public class PropertyDetailsServiceImp implements PropertyDetailsService{
         Long totalPopularity = (long)0;
         
         for(PropertyDetails property : properties){
+            
             if(property.getAvailability()) {
                 totalPopularity += property.getPopularity();
             }
+        
         }
+
         return totalPopularity / properties.size();
     }
 
     @Override
     public PropertyDetailsResponse saveProperty(PropertyInfoPost property) {
         User user = userRepository.findById(property.getUser_id()).get();
-        Location propertyLocation = new Location(null, property.getLocation().getCountry(), property.getLocation().getCity(), property.getLocation().getState(), property.getLocation().getPrimary_address(), property.getLocation().getPincode(),property.getLocation().getCoordinates());
+        Location propertyLocation = new Location(null, property.getLocation().getCountry(), property.getLocation().getCity(), property.getLocation().getState(), property.getLocation().getPrimary_address(), property.getLocation().getPincode(), property.getLocation().getCoordinates());
 
         Integer flag = 0;
         List<Location> locations = locationRepository.findAll();
+        
         for(Location location : locations ){
-            System.out.println(propertyLocation.getCoordinates().equals(location.getCoordinates()));
+        
             if(propertyLocation.getCoordinates().equals(location.getCoordinates())){
                 flag = 1;
                 propertyLocation = location;
             }
+        
         }
-
-        System.out.println("flag "+ flag);
 
         if(flag.equals(0)){
             locationRepository.save(propertyLocation);
         }
 
-        PropertyDetails propertyDetails = new PropertyDetails(null, user, property.getName(), propertyLocation, property.getPrice(), true, 0, (long)0,-1,0);
+        PropertyDetails propertyDetails = new PropertyDetails(null, user, property.getName(), propertyLocation, property.getPrice(), true, 0, (long)0, -1, 0);
         PropertyDetails details = propertyDetailsRepository.save(propertyDetails);
         return new PropertyDetailsResponse(details.getPropertyId(), userService.responseConverter(user), details.getName(), propertyLocation, details.getPrice(), details.getAvailability(), details.getRating(), details.getPopularity());
     }
@@ -125,7 +128,7 @@ public class PropertyDetailsServiceImp implements PropertyDetailsService{
         property.setPopularity(property.getPopularity() + 1);
         propertyDetailsRepository.save(property);
         
-        return new PropertyDetailsResponse(property.getPropertyId(), userService.responseConverter(property.getUser_id()), property.getName(),property.getLocation(),property.getPrice(),property.getAvailability(),property.getRating(),property.getPopularity());
+        return new PropertyDetailsResponse(property.getPropertyId(), userService.responseConverter(property.getUser_id()), property.getName(), property.getLocation(), property.getPrice(), property.getAvailability(), property.getRating(), property.getPopularity());
     }
 
     @Override
@@ -186,7 +189,7 @@ public class PropertyDetailsServiceImp implements PropertyDetailsService{
         if(rating != null){
 
             if(rating.getRating() > 5 || rating.getRating() < 0){
-                throw new RuntimeException("Provide rating less than or equal to 5");
+                throw new RuntimeException("Provide rating equal to 0 or less than or equal to 5");
             }
                 
             if(propertyDetails.getRated() == -1){

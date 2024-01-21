@@ -20,7 +20,7 @@ public class KeyProperties {
     @Setter
     private RSAPrivateKey privateKey;
 
-    public KeyProperties(){
+    public KeyProperties() {
         KeyPair pair = KeyGeneratorUtility.generateRsaKey();
         this.publicKey = (RSAPublicKey) pair.getPublic();
         this.privateKey = (RSAPrivateKey) pair.getPrivate();

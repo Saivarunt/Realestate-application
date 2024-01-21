@@ -22,6 +22,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AgentProfile {
+
     @Id
     @Column(name = "agent_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,5 +37,6 @@ public class AgentProfile {
     private Integer sale_count = 0;
 
     private Integer rated = 0;
+
     private Integer rating_count = 0;
 }

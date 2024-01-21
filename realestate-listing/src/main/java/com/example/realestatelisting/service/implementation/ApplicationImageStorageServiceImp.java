@@ -17,7 +17,7 @@ import com.example.realestatelisting.repository.UserRepository;
 import com.example.realestatelisting.service.ApplicationImageStorageService;
 
 @Service
-public class ApplicationImageStorageServiceImp implements ApplicationImageStorageService{
+public class ApplicationImageStorageServiceImp implements ApplicationImageStorageService {
 
     @Autowired
     ApplicationImageStorageRepository applicationImageStorageRepository;
@@ -31,8 +31,6 @@ public class ApplicationImageStorageServiceImp implements ApplicationImageStorag
     @Override
     public String uploadImage(MultipartFile file, String type, String primaryField) {
         String filePath = "D:\\varun\\college\\trustrace\\code\\backend-task\\realestate-listing\\images\\" + file.getOriginalFilename();
-        
-        System.out.println(file.getContentType());
 
         if(file.getContentType().split("/")[0].equals("image")){
 

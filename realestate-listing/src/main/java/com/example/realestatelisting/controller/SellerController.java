@@ -60,7 +60,7 @@ public class SellerController {
 
     
     @PutMapping("/update-property-info/{id}")
-    public ResponseEntity<PropertyDetailsResponse> updatePropertyInfo(@RequestBody UpdatePropertyInfo body, @PathVariable String id , HttpServletRequest request) {
+    public ResponseEntity<PropertyDetailsResponse> updatePropertyInfo(@RequestBody UpdatePropertyInfo body, @PathVariable String id, HttpServletRequest request) {
         String username = tokenService.validateJWTForUserInfo(request.getHeader("Authorization").split(" ",2)[1]);
         User user = userService.getEntireUser(username);
         
@@ -72,7 +72,7 @@ public class SellerController {
     }
 
     @DeleteMapping("/delete-property-info/{id}")
-    public ResponseEntity<Boolean> deletePropertyInfo(@PathVariable String id, HttpServletRequest request){
+    public ResponseEntity<Boolean> deletePropertyInfo(@PathVariable String id, HttpServletRequest request) {
         String username = tokenService.validateJWTForUserInfo(request.getHeader("Authorization").split(" ",2)[1]);
 
         PropertyDetails propertyDetails = propertyDetailsService.getEntireDetailsById(id);
@@ -87,7 +87,7 @@ public class SellerController {
     }
 
     @PostMapping("/image-upload-to-property/{id}")
-    public ResponseEntity<String> addImage(@PathVariable String id, @RequestParam("image")MultipartFile file , HttpServletRequest request) {
+    public ResponseEntity<String> addImage(@PathVariable String id, @RequestParam("image")MultipartFile file, HttpServletRequest request) {
         String username = tokenService.validateJWTForUserInfo(request.getHeader("Authorization").split(" ",2)[1]);
         PropertyDetails property = propertyDetailsService.getEntireDetailsById(id);
 
