@@ -1,6 +1,5 @@
 package com.example.realestatelisting.configuration;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,6 +10,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,7 +32,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 
 @Configuration
 public class SecurityConfiguration {
-    
+
     private final KeyProperties keys;
 
     public SecurityConfiguration(KeyProperties keys){
@@ -83,7 +83,13 @@ public class SecurityConfiguration {
         http
             .sessionManagement(
                 session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-            
+
+        http
+        .logout(logout -> 
+            logout.logoutUrl("/auth/logout")
+            .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+        );
+
         return http.build();
     }
 
