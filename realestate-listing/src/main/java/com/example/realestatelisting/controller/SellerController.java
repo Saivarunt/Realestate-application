@@ -10,9 +10,11 @@ import com.example.realestatelisting.models.PropertyDetails;
 import com.example.realestatelisting.models.User;
 import com.example.realestatelisting.models.dto.PropertyDetailsResponse;
 import com.example.realestatelisting.models.dto.PropertyInfoPost;
+import com.example.realestatelisting.models.dto.PropertyInfoPostWithDeadline;
 import com.example.realestatelisting.models.dto.UpdatePropertyInfo;
 import com.example.realestatelisting.service.implementation.ApplicationImageStorageServiceImp;
 import com.example.realestatelisting.service.implementation.PropertyDetailsServiceImp;
+import com.example.realestatelisting.service.implementation.PropertyWithDeadlineServiceImp;
 import com.example.realestatelisting.service.implementation.TokenService;
 import com.example.realestatelisting.service.implementation.UserServiceImp;
 
@@ -36,6 +38,9 @@ public class SellerController {
     
     @Autowired
     PropertyDetailsServiceImp propertyDetailsService;
+
+    @Autowired
+    PropertyWithDeadlineServiceImp propertyWithDeadlineService;
  
     @Autowired
     TokenService tokenService;
@@ -113,4 +118,18 @@ public class SellerController {
         return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
 
 	}
+
+    //Property with deadline
+
+    @PostMapping("/post-property-with-deadliine")
+    public ResponseEntity<PropertyDetailsResponse> postPropertyInfoWithDeadline(@RequestBody PropertyInfoPostWithDeadline body,  HttpServletRequest request) {
+        String username = tokenService.validateJWTForUserInfo(request.getHeader("Authorization").split(" ",2)[1]);
+        User user = userService.getEntireUser(username);
+        
+        if(body.getUser_id().equals(user.getUserId())){
+            return new ResponseEntity<>(propertyWithDeadlineService.saveProperty(body), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+    }
 }
