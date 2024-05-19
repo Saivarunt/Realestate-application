@@ -1,6 +1,7 @@
 package com.example.realestatelisting.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.realestatelisting.models.AgentProfile;
@@ -19,6 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -52,9 +54,22 @@ public class AgentController {
         return new ResponseEntity<>(agentProfileService.getAllProfiles(),HttpStatus.OK);
     }
 
+    
+    @GetMapping("/by-page/")
+    public ResponseEntity<Page<AgentProfileResponse>> getAllAgentsPage(@RequestParam Integer page) {
+        return new ResponseEntity<>(agentProfileService.getAllProfilesByPage(page),HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<AgentProfileResponse> getAgentInfo(@PathVariable String id) {
         AgentProfileResponse profile = agentProfileService.getAgentProfile(id);
+        return new ResponseEntity<>(profile, HttpStatus.OK);
+    }
+    
+    @GetMapping("/by-user-id/{id}")
+    public ResponseEntity<AgentProfileResponse> getAgentInfoByUserId(@PathVariable String id) {
+
+        AgentProfileResponse profile = agentProfileService.getByUserInfo(userService.getEntireUser(userService.getById(id).getUsername()));
         return new ResponseEntity<>(profile, HttpStatus.OK);
     }
     

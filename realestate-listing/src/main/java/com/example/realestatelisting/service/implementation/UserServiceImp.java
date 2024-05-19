@@ -3,6 +3,8 @@ package com.example.realestatelisting.service.implementation;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -46,6 +48,11 @@ public class UserServiceImp  implements UserService, UserDetailsService {
         return userRepository.findAll();
     }
 
+
+    @Override
+    public Page<User> getAllPageable(Integer page) {
+        return userRepository.findAll(PageRequest.of(page,10));
+    }
     @Override
     public UserInfoResponse getById(String id) {
         User user = userRepository.findById(Long.parseLong(id)).get();

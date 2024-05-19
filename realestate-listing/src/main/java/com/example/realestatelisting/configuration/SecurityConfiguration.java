@@ -60,6 +60,7 @@ public class SecurityConfiguration {
                 auth.requestMatchers("/auth/add-role").authenticated();
                 auth.requestMatchers("/auth/remove-role").authenticated();
                 auth.requestMatchers("/auth/**").permitAll();
+                auth.requestMatchers("/static/**").permitAll();
 
                 auth.requestMatchers(HttpMethod.GET,"/agent/**").authenticated();
                 auth.requestMatchers("/agent/select-agent/**","/agent/rate-agent/**").hasAnyRole("ADMIN","BUYER");

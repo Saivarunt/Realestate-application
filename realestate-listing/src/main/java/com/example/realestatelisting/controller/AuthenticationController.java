@@ -1,6 +1,8 @@
 package com.example.realestatelisting.controller;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,11 +11,14 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.realestatelisting.models.Permissions;
 import com.example.realestatelisting.models.User;
+import com.example.realestatelisting.models.UserPermissions;
 import com.example.realestatelisting.models.dto.AgentProfileResponse;
 import com.example.realestatelisting.models.dto.LoginResponse;
 import com.example.realestatelisting.models.dto.Registration;
 import com.example.realestatelisting.models.dto.UpdateRole;
+import com.example.realestatelisting.repository.UserPermissionsRepository;
 import com.example.realestatelisting.service.implementation.AgentProfileServiceImp;
 import com.example.realestatelisting.service.implementation.AuthenticationService;
 import com.example.realestatelisting.service.implementation.TokenService;
@@ -23,6 +28,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -40,6 +48,9 @@ public class AuthenticationController {
 
     @Autowired
     AgentProfileServiceImp agentProfileService;
+
+    @Autowired
+    UserPermissionsRepository userPermissionsRepository;
 
     @PostMapping("/agent-registration")
     public ResponseEntity<AgentProfileResponse> registUserAsAgent(@RequestBody Registration body) {
@@ -93,5 +104,12 @@ public class AuthenticationController {
         }
 
     }
+
+    @GetMapping("/user-permission/")
+    public ResponseEntity<List<Permissions>> getUserPermissions(@RequestParam String id) {
+        List<Permissions> userPermissions = userPermissionsRepository.findAll().stream().filter(val -> val.getUser_id().getUserId().equals(Long.parseLong(id))).map(val -> val.getPermission_id()).collect(Collectors.toList());
+        return new ResponseEntity<>(userPermissions, HttpStatus.OK);
+    }
+    
 
 }

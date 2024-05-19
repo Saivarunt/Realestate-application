@@ -13,6 +13,7 @@ import com.example.realestatelisting.models.dto.PropertyInfoPost;
 import com.example.realestatelisting.models.dto.PropertyInfoPostWithDeadline;
 import com.example.realestatelisting.models.dto.UpdatePropertyInfo;
 import com.example.realestatelisting.service.implementation.ApplicationImageStorageServiceImp;
+import com.example.realestatelisting.service.implementation.PermissionsService;
 import com.example.realestatelisting.service.implementation.PropertyDetailsServiceImp;
 import com.example.realestatelisting.service.implementation.PropertyWithDeadlineServiceImp;
 import com.example.realestatelisting.service.implementation.TokenService;
@@ -23,6 +24,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +42,9 @@ public class SellerController {
     PropertyDetailsServiceImp propertyDetailsService;
 
     @Autowired
+    PermissionsService permissionsService;
+
+    @Autowired
     PropertyWithDeadlineServiceImp propertyWithDeadlineService;
  
     @Autowired
@@ -51,6 +56,7 @@ public class SellerController {
     @Autowired
     UserServiceImp userService;
 
+    // @PreAuthorize("@permissionsService.hasAccess(principal.id,'SELL_PROPERTY')")
     @PostMapping("/post-property-info")
     public ResponseEntity<PropertyDetailsResponse> postPropertyInfo(@RequestBody PropertyInfoPost body,  HttpServletRequest request) {
         String username = tokenService.validateJWTForUserInfo(request.getHeader("Authorization").split(" ",2)[1]);
@@ -63,7 +69,7 @@ public class SellerController {
         return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
     }
 
-    
+    // @PreAuthorize("@permissionsService.hasAccess(principal.id,'UPDATE_PROPERTY')")
     @PutMapping("/update-property-info/{id}")
     public ResponseEntity<PropertyDetailsResponse> updatePropertyInfo(@RequestBody UpdatePropertyInfo body, @PathVariable String id, HttpServletRequest request) {
         String username = tokenService.validateJWTForUserInfo(request.getHeader("Authorization").split(" ",2)[1]);

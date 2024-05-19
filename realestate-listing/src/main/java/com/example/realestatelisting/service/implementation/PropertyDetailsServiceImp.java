@@ -2,8 +2,13 @@ package com.example.realestatelisting.service.implementation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.example.realestatelisting.models.Location;
@@ -17,6 +22,7 @@ import com.example.realestatelisting.repository.LocationRepository;
 import com.example.realestatelisting.repository.PropertyDetailsRepository;
 import com.example.realestatelisting.repository.UserRepository;
 import com.example.realestatelisting.service.PropertyDetailsService;
+import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
 
 @Service
 public class PropertyDetailsServiceImp implements PropertyDetailsService {
@@ -152,6 +158,30 @@ public class PropertyDetailsServiceImp implements PropertyDetailsService {
         return responses;
     }
 
+
+
+    @Override
+    public List<PropertyDetailsResponse> getDetailsWithName(String propertyname) {
+        List<PropertyDetails> properties = propertyDetailsRepository.findByPropertyName(propertyname);
+        System.out.println(properties);
+        List<PropertyDetailsResponse> responses = new ArrayList<>();
+        Long averagePopularity = averagePoplarity();
+
+        for(PropertyDetails property : properties){
+
+            if(property.getPopularity() > averagePopularity && property.getAvailability()) {
+                property.setPrice(property.getPrice() + 99);
+            }
+            
+            property.setPopularity(property.getPopularity() + 1);
+            propertyDetailsRepository.save(property);
+            responses.add(new PropertyDetailsResponse(property.getPropertyId(), userService.responseConverter(property.getUser_id()), property.getName(), property.getLocation(), property.getPrice(), property.getAvailability(), property.getRating(), property.getPopularity()));
+
+        }
+
+        return responses;
+    }
+
     @Override
     public Boolean deletePropertyDetails(String id) {
         propertyDetailsRepository.deleteById(Long.parseLong(id));
@@ -208,6 +238,28 @@ public class PropertyDetailsServiceImp implements PropertyDetailsService {
         PropertyDetails details = propertyDetailsRepository.save(propertyDetails);
         return new PropertyDetailsResponse(details.getPropertyId(), userService.responseConverter(details.getUser_id()), details.getName(), details.getLocation(), details.getPrice(), details.getAvailability(), details.getRating(), details.getPopularity());
     
+    }
+
+
+    @Override
+    public Page<PropertyDetailsResponse> getAllPropertiesPage(Integer page) {
+
+        Page<PropertyDetails> properties = propertyDetailsRepository.findAll(PageRequest.of(page,10));
+
+        List<PropertyDetailsResponse> responses = properties.getContent().stream()
+        .map(details -> new PropertyDetailsResponse(
+                details.getPropertyId(),
+                userService.responseConverter(details.getUser_id()),
+                details.getName(),
+                details.getLocation(),
+                details.getPrice(),
+                details.getAvailability(),
+                details.getRating(),
+                details.getPopularity()
+        ))
+        .collect(Collectors.toList());
+
+        return new PageImpl<>(responses, PageRequest.of(page, 10), properties.getTotalElements());
     }
 
 }

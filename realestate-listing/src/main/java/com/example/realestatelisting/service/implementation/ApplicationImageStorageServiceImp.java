@@ -30,7 +30,7 @@ public class ApplicationImageStorageServiceImp implements ApplicationImageStorag
 
     @Override
     public String uploadImage(MultipartFile file, String type, String primaryField) {
-        String filePath = "D:\\varun\\college\\trustrace\\code\\backend-task\\realestate-listing\\images\\" + file.getOriginalFilename();
+        String filePath = "http://localhost:8080/static/images/" + file.getOriginalFilename();
 
         if(file.getContentType().split("/")[0].equals("image")){
 

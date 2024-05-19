@@ -13,8 +13,11 @@ import org.springframework.stereotype.Service;
 
 import com.example.realestatelisting.models.Role;
 import com.example.realestatelisting.models.User;
+import com.example.realestatelisting.models.UserPermissions;
 import com.example.realestatelisting.models.dto.LoginResponse;
 import com.example.realestatelisting.repository.RoleRepositoy;
+import com.example.realestatelisting.repository.RolesPermissionsRepository;
+import com.example.realestatelisting.repository.UserPermissionsRepository;
 import com.example.realestatelisting.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -28,6 +31,12 @@ public class AuthenticationService {
 
     @Autowired
     RoleRepositoy roleRepositoy;
+
+    @Autowired
+    RolesPermissionsRepository rolesPermissionsRepository;
+
+    @Autowired
+    UserPermissionsRepository userPermissionsRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -67,7 +76,18 @@ public class AuthenticationService {
             authorities.add(subRole);
         }
 
-        return userRepository.save(new User((long) 0, username, encodedPassword, authorities, "", "", ""));
+        User user = userRepository.save(new User((long) 0, username, encodedPassword, authorities, "", "", ""));
+
+        rolesPermissionsRepository.findByRole_id(subRole).stream().forEach(val -> {
+            userPermissionsRepository.save(new UserPermissions(null, val.getPermission_id(), user));
+        });
+
+        rolesPermissionsRepository.findByRole_id(userRole).stream().forEach(val -> {
+            userPermissionsRepository.save(new UserPermissions(null, val.getPermission_id(), user));
+        });
+
+        return user;
+
     }
 
     public LoginResponse loginUser(String username, String password) {
@@ -134,4 +154,6 @@ public class AuthenticationService {
         
         return userRepository.save(updatedUser);
     }
+
+    
 }

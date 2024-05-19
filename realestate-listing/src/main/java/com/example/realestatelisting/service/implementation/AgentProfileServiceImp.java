@@ -2,8 +2,12 @@ package com.example.realestatelisting.service.implementation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.example.realestatelisting.models.AgentProfile;
@@ -42,6 +46,24 @@ public class AgentProfileServiceImp  implements AgentProfileService {
             responses.add(new AgentProfileResponse(agent.getAgentId(), user, agent.getRating(), agent.getSale_count()));
         }
         return responses;
+    }
+
+
+    @Override
+    public Page<AgentProfileResponse> getAllProfilesByPage(Integer page) {
+
+        Page<AgentProfile> agents = agentProfileRepository.findAll(PageRequest.of(page,10));
+
+        List<AgentProfileResponse> responses = agents.getContent().stream()
+        .map(details -> new AgentProfileResponse(
+            details.getAgentId(), 
+            userService.responseConverter(details.getUserId()), 
+            details.getRating(), 
+            details.getSale_count()
+            ))
+        .collect(Collectors.toList());
+        
+        return new PageImpl<>(responses, PageRequest.of(page, 10), agents.getTotalElements());
     }
 
     @Override
@@ -87,5 +109,11 @@ public class AgentProfileServiceImp  implements AgentProfileService {
     public AgentProfileResponse responseConverter(AgentProfile agent) {
         UserInfoResponse user = userService.responseConverter(agent.getUserId());
         return new AgentProfileResponse(agent.getAgentId(), user, agent.getRating(), agent.getSale_count());
+    }
+
+    @Override
+    public AgentProfileResponse getByUserInfo(User userid) {
+        AgentProfile agent = agentProfileRepository.findByUserId(userid);
+        return responseConverter(agent);
     }
 }

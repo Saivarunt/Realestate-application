@@ -3,6 +3,7 @@ package com.example.realestatelisting.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin("*")
+// @CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200/")
 public class UserController {
     
     @Autowired
@@ -62,6 +64,11 @@ public class UserController {
     @GetMapping("/")
     public ResponseEntity<List<User>> getAllUsers() {
         return new ResponseEntity<>(userService.getAll(), HttpStatus.OK);
+    }
+    
+    @GetMapping("/info/")
+    public ResponseEntity<Page<User>> getAllUserInfo(@RequestParam Integer page) {
+        return new ResponseEntity<>(userService.getAllPageable(page), HttpStatus.OK);
     }
     
     @GetMapping("/by-id/{id}")
@@ -95,6 +102,12 @@ public class UserController {
     public ResponseEntity<List<PropertyDetailsResponse>> getAllPropertyDetails() {
         return new ResponseEntity<>(propertyDetailsService.getAllDetails(),HttpStatus.OK);
     }
+
+    
+    @GetMapping("/properties-pageable/")
+    public ResponseEntity<Page<PropertyDetailsResponse>> getAllPropertyDetailsPage(@RequestParam Integer page) {
+        return new ResponseEntity<>(propertyDetailsService.getAllPropertiesPage(page),HttpStatus.OK);
+    }
     
     @GetMapping("/property-id/{id}")
     public ResponseEntity<PropertyDetailsResponse> getByPropertyId(@PathVariable String id) {
@@ -105,6 +118,12 @@ public class UserController {
     public ResponseEntity<List<PropertyDetailsResponse>> getByPropertyName(@PathVariable String propertyname) {
         return new ResponseEntity<>(propertyDetailsService.getDetailsByName(propertyname),HttpStatus.OK);
     }
+
+    @GetMapping("/property-with-name/{propertyname}")
+    public ResponseEntity<List<PropertyDetailsResponse>> getPropertyWithName(@PathVariable String propertyname) {
+        return new ResponseEntity<>(propertyDetailsService.getDetailsWithName(propertyname),HttpStatus.OK);
+    }
+
 
     @PostMapping("/image-upload-to-user/{id}")
     public ResponseEntity<String> addImage(@PathVariable String id, @RequestParam("image")MultipartFile file, HttpServletRequest request) {
@@ -125,8 +144,8 @@ public class UserController {
         User user = userService.getEntireUser(username);
         ApplicationImageStorage image = applicationImageStorageService.findImage(user);
 
-        if (image.getImage_url().equals("D:\\varun\\college\\trustrace\\code\\backend-task\\realestate-listing\\images\\" + fileName) && Long.parseLong(id) == (long) user.getUserId()){			
-            byte[] imageData=applicationImageStorageService.getByFileName("D:\\varun\\college\\trustrace\\code\\backend-task\\realestate-listing\\images\\"+fileName);
+        if (image.getImage_url().equals("http://localhost:8080/static/images/" + fileName) && Long.parseLong(id) == (long) user.getUserId()){			
+            byte[] imageData=applicationImageStorageService.getByFileName("http://localhost:8080/static/images/"+fileName);
             return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.valueOf("image/jpg"))
                     .body(imageData);
@@ -141,8 +160,8 @@ public class UserController {
         PropertyDetails property = propertyDetailsService.getEntireDetailsById(id);
         ApplicationImageStorage image = applicationImageStorageService.findPropertyImage(property);
 
-        if (image.getImage_url().equals("D:\\varun\\college\\trustrace\\code\\backend-task\\realestate-listing\\images\\" + fileName)){			
-            byte[] imageData=applicationImageStorageService.getByFileName("D:\\varun\\college\\trustrace\\code\\backend-task\\realestate-listing\\images\\" + fileName);
+        if (image.getImage_url().equals("http://localhost:8080/static/images/" + fileName)){			
+            byte[] imageData=applicationImageStorageService.getByFileName("http://localhost:8080/static/images/" + fileName);
             return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.valueOf("image/jpg"))
                     .body(imageData);
@@ -174,6 +193,11 @@ public class UserController {
     @GetMapping("/locations")
     public ResponseEntity<List<Location>> findAllLocation() {
         return new ResponseEntity<>(locationService.getAllLocations(),HttpStatus.OK);
+    }
+
+    @GetMapping("/locations-by-page/")
+    public ResponseEntity<Page<Location>> findAllLocation(@RequestParam Integer page) {
+        return new ResponseEntity<>(locationService.getAllLocationsPage(page),HttpStatus.OK);
     }
     
     @GetMapping("/locations-by-id/{id}")

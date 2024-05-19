@@ -2,6 +2,7 @@ package com.example.realestatelisting.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.example.realestatelisting.models.PropertyDetails;
@@ -23,4 +24,6 @@ public interface PropertyDetailsService {
     public PropertyDetails getEntireDetailsById(String id);
     public PropertyDetailsResponse responseConverter(PropertyDetails property);
     public PropertyDetailsResponse savePropertyRating(PropertyDetails propertyDetails, Rating rating);
+    public Page<PropertyDetailsResponse> getAllPropertiesPage(Integer page);
+    List<PropertyDetailsResponse> getDetailsWithName(String propertyname);
 }

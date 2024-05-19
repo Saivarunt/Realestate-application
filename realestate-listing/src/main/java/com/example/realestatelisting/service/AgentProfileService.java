@@ -2,6 +2,7 @@ package com.example.realestatelisting.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.example.realestatelisting.models.AgentProfile;
@@ -17,4 +18,6 @@ public interface AgentProfileService {
     public AgentProfileResponse saveAgent(AgentProfile agent, Rating rating);
     public AgentProfile getAgentEntireProfile(String agentId);
     public AgentProfileResponse responseConverter(AgentProfile agent);
+    public AgentProfileResponse getByUserInfo(User userid);
+    public Page<AgentProfileResponse> getAllProfilesByPage(Integer page);
 }
